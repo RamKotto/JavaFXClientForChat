@@ -52,7 +52,6 @@ public class Controller {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             timer();
-
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
