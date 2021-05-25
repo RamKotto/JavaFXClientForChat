@@ -9,14 +9,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class Controller {
 
-    private AtomicBoolean timeForAuth = new AtomicBoolean(true);
 
     Socket socket = null;
     DataInputStream in;
@@ -51,30 +47,27 @@ public class Controller {
             socket = new Socket("localhost", 8189);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            timer();
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        while (timeForAuth.get()) {
+                        while (true) {
                             String strFromServer = in.readUTF();
                             if (strFromServer.startsWith("/authok")) {
                                 break;
                             }
                             mainChatArea.appendText(strFromServer + "\n");
                         }
-                        if (!timeForAuth.get()) {
-                            try {
-                                socket.close();
-                                in.close();
-                                out.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
                         while (true) {
                             String strFromServer = in.readUTF();
                             if (strFromServer.equalsIgnoreCase("/end")) {
+                                try {
+                                    socket.close();
+                                    in.close();
+                                    out.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
                             }
                             mainChatArea.appendText(strFromServer);
@@ -99,14 +92,42 @@ public class Controller {
         }
     }
 
-    public void timer() {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.schedule(() ->
-                        timeForAuth.set(false)
-                , 10, TimeUnit.SECONDS);
-        if (!timeForAuth.get()) {
-            System.out.println("Время на авторизацию вышло!");
-            service.shutdown();
-        }
-    }
+
+//    public void start() {
+//        try {
+//            socket = new Socket("localhost", 8189);
+//            socket.setSoTimeout(15000);
+//            in = new DataInputStream(socket.getInputStream());
+//            out = new DataOutputStream(socket.getOutputStream());
+//            Thread t = new Thread(() -> {
+//                try {
+//                    while (true) {
+//                        String str = in.readUTF();
+//                        mainChatArea.appendText(str + "\n");
+//                        if (str.startsWith("/authok")) {
+//                            socket.setSoTimeout(0);
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//            t.start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void onAuthClick() {
+//        if (socket == null || socket.isClosed()) {
+//            start();
+//        }
+//        try {
+//            out.writeUTF("/auth" + loginField.getText() + " " + passField.getText());
+//            loginField.clear();
+//            passField.clear();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
