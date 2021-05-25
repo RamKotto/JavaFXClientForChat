@@ -11,8 +11,8 @@
     <HBox>
         <TextField fx:id="messageField" HBox.hgrow="ALWAYS" onAction="#sendMessage" />
         <Button text="Send" onAction="#sendMessage" />
-        <TextField text="login1" fx:id="loginField" />
-        <TextField text="pass1" fx:id="passField" />
+        <TextField text="login3" fx:id="loginField" />
+        <TextField text="pass3" fx:id="passField" />
         <Button text="Auth" onAction="#onAuthClick" />
     </HBox>
 </VBox>
