@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox fx:controller="sampleOne.Controller" xmlns:fx="http://javafx.com/fxml" alignment="center">
+<VBox fx:controller="sampleThree.Controller" xmlns:fx="http://javafx.com/fxml" alignment="center">
     <TextArea fx:id="mainChatArea" VBox.vgrow="ALWAYS" />
     <HBox>
         <TextField fx:id="messageField" HBox.hgrow="ALWAYS" onAction="#sendMessage" />

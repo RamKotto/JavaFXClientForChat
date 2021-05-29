@@ -5,10 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Controller {
@@ -54,6 +54,7 @@ public class Controller {
                         while (true) {
                             String strFromServer = in.readUTF();
                             if (strFromServer.startsWith("/authok")) {
+                                loadHistory();
                                 break;
                             }
                             mainChatArea.appendText(strFromServer + "\n");
@@ -71,6 +72,7 @@ public class Controller {
                                 break;
                             }
                             mainChatArea.appendText(strFromServer + "\n");
+                            saveHistory();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -91,42 +93,42 @@ public class Controller {
         }
     }
 
+    private void saveHistory() {
+        try {
+            File history = new File("history.txt");
+            PrintWriter fileWriter = new PrintWriter(new FileWriter(history, false));
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(mainChatArea.getText());
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-//    public void start() {
-//        try {
-//            socket = new Socket("localhost", 8189);
-//            socket.setSoTimeout(15000);
-//            in = new DataInputStream(socket.getInputStream());
-//            out = new DataOutputStream(socket.getOutputStream());
-//            Thread t = new Thread(() -> {
-//                try {
-//                    while (true) {
-//                        String str = in.readUTF();
-//                        mainChatArea.appendText(str + "\n");
-//                        if (str.startsWith("/authok")) {
-//                            socket.setSoTimeout(0);
-//                        }
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//            t.start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void onAuthClick() {
-//        if (socket == null || socket.isClosed()) {
-//            start();
-//        }
-//        try {
-//            out.writeUTF("/auth" + loginField.getText() + " " + passField.getText());
-//            loginField.clear();
-//            passField.clear();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void loadHistory() throws IOException {
+        int lineHistory = 100;
+        File history = new File("history.txt");
+        if (!history.exists()) {
+            System.out.println("Создание файла истории");
+            history.createNewFile();
+        }
+        List<String> historyList = new ArrayList<>();
+        FileInputStream in = new FileInputStream(history);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+
+        String temp;
+        while ((temp = bufferedReader.readLine()) != null) {
+            historyList.add(temp);
+        }
+
+        if (historyList.size() > lineHistory) {
+            for (int i = historyList.size() - lineHistory; i <= (historyList.size() - 1); i++) {
+                mainChatArea.appendText(historyList.get(i) + "\n");
+            }
+        } else {
+            for (int i = 0; i < historyList.size() ; i++) {
+                mainChatArea.appendText(historyList.get(i) + "\n");
+            }
+        }
+    }
 }
