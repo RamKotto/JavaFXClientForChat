@@ -90,43 +90,4 @@ public class Controller {
             e.printStackTrace();
         }
     }
-
-
-//    public void start() {
-//        try {
-//            socket = new Socket("localhost", 8189);
-//            socket.setSoTimeout(15000);
-//            in = new DataInputStream(socket.getInputStream());
-//            out = new DataOutputStream(socket.getOutputStream());
-//            Thread t = new Thread(() -> {
-//                try {
-//                    while (true) {
-//                        String str = in.readUTF();
-//                        mainChatArea.appendText(str + "\n");
-//                        if (str.startsWith("/authok")) {
-//                            socket.setSoTimeout(0);
-//                        }
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//            t.start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void onAuthClick() {
-//        if (socket == null || socket.isClosed()) {
-//            start();
-//        }
-//        try {
-//            out.writeUTF("/auth" + loginField.getText() + " " + passField.getText());
-//            loginField.clear();
-//            passField.clear();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
