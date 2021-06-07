@@ -1,4 +1,4 @@
-package sample;
+package sampleThree;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,8 +70,7 @@ public class Controller {
                                 }
                                 break;
                             }
-                            mainChatArea.appendText(strFromServer);
-                            mainChatArea.appendText("\n");
+                            mainChatArea.appendText(strFromServer + "\n");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
